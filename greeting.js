@@ -62,8 +62,7 @@ function generateImage(downloadAfter = false) {
   canvas.height = 600;
   const ctx = canvas.getContext('2d');
   const bg = new Image();
-  bg.crossOrigin = 'anonymous';
-  bg.src = ''janmastmi_template.jpg';
+  bg.src = 'janmastmi_template.jpg';
 
   bg.onload = () => {
     ctx.drawImage(bg, 0, 0, 400, 600);
@@ -97,4 +96,3 @@ function generateImage(downloadAfter = false) {
     }
   };
 }
-
