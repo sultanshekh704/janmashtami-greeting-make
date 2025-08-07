@@ -63,7 +63,7 @@ function generateImage(downloadAfter = false) {
   const ctx = canvas.getContext('2d');
   const bg = new Image();
   bg.crossOrigin = 'anonymous';
-  bg.src = 'https://res.cloudinary.com/dmpnfwawo/image/upload/v1754565396/janmastmi_template_iy4pcv.jpg';
+  bg.src = ''janmastmi_template.jpg';
 
   bg.onload = () => {
     ctx.drawImage(bg, 0, 0, 400, 600);
@@ -97,3 +97,4 @@ function generateImage(downloadAfter = false) {
     }
   };
 }
+
