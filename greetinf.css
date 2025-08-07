@@ -1,0 +1,59 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+.template-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: 600px;
+  margin: auto;
+  margin-bottom: 16px;
+  background: url('https://i.postimg.cc/F7Q2ZsTk/janmastmi-template.jpg') no-repeat center center;
+  background-size: cover;
+  border: 2px solid #aaa;
+}
+
+.photo-frame {
+  position: absolute;
+  right: 15px;
+  bottom: 65px;
+  width: 120px;
+  height: 150px;
+  border: 2px solid #ccc;
+  background: #fff;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#uploadedImg {
+  max-width: 100%;
+  max-height: 100%;
+  display: none;
+}
+
+.name-box {
+  position: absolute;
+  right: 20px;
+  bottom: 40px;
+  width: 120px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  color: #333;
+}
+
+.input-area {
+  margin-top: 20px;
+}
+
+.input-area input,
+.input-area button {
+  margin: 5px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
