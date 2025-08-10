@@ -88,11 +88,11 @@ function generateImage(downloadAfter = false) {
   const drawFinal = () => {
     const name = nameInput.value || '';
     
-    // Draw name text
+    // Draw name text - position it near the photo frame
     ctx.font = 'bold 24px Arial';
     ctx.textAlign = 'center';
     ctx.fillStyle = '#333';
-    ctx.fillText(name, canvas.width * 0.5, canvas.height * 0.95);
+    ctx.fillText(name, canvas.width * 0.85, canvas.height * 0.95);
 
     // Convert to blob and handle download/share
     canvas.toBlob(blob => {
@@ -111,12 +111,12 @@ function generateImage(downloadAfter = false) {
   if (uploadedImg.src && uploadedImg.src !== '') {
     const userImg = new Image();
     userImg.onload = () => {
-      // Calculate position and size for the uploaded image
-      // Position it in the center area of the template
-      const imgWidth = canvas.width * 0.3; // 30% of canvas width
-      const imgHeight = canvas.height * 0.25; // 25% of canvas height
-      const imgX = (canvas.width - imgWidth) * 0.5; // Center horizontally
-      const imgY = canvas.height * 0.4; // Position vertically
+      // Position the uploaded image in the bottom right photo frame area
+      // Based on the template design, the photo frame is in the bottom right
+      const imgWidth = canvas.width * 0.25; // 25% of canvas width
+      const imgHeight = canvas.height * 0.3; // 30% of canvas height
+      const imgX = canvas.width * 0.7; // Position in bottom right area
+      const imgY = canvas.height * 0.6; // Position vertically in bottom area
       
       ctx.drawImage(userImg, imgX, imgY, imgWidth, imgHeight);
       drawFinal();
