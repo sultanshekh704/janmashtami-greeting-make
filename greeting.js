@@ -111,14 +111,8 @@ function generateImage(downloadAfter = false) {
   if (uploadedImg.src && uploadedImg.src !== '') {
     const userImg = new Image();
     userImg.onload = () => {
-      // Position the uploaded image in the bottom right photo frame area
-      // Based on the template design, the photo frame is in the bottom right
-      const imgWidth = canvas.width * 0.25; // 25% of canvas width
-      const imgHeight = canvas.height * 0.3; // 30% of canvas height
-      const imgX = canvas.width * 0.7; // Position in bottom right area
-      const imgY = canvas.height * 0.6; // Position vertically in bottom area
-      
-      ctx.drawImage(userImg, imgX, imgY, imgWidth, imgHeight);
+      // Position the uploaded image using exact coordinates from template
+      ctx.drawImage(userImg, 249, 380, 135, 155);
       drawFinal();
     };
     userImg.onerror = () => {
