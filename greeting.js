@@ -7,6 +7,14 @@ const whatsappBtn = document.getElementById('whatsappBtn');
 const generalShareBtn = document.getElementById('generalShareBtn');
 
 let shareableImageBlob = null;
+let templateImage = null;
+
+// Load template image once
+const bg = new Image();
+bg.onload = () => {
+  templateImage = bg;
+};
+bg.src = 'janmastmi_template.jpg';
 
 fileInput.addEventListener('change', e => {
   const file = e.target.files[0];
@@ -29,70 +37,96 @@ downloadBtn.addEventListener('click', () => {
 
 whatsappBtn.addEventListener('click', () => {
   if (!shareableImageBlob) {
-    alert('Generate image first!');
+    alert('Please upload an image and click Download first!');
     return;
   }
-  const file = new File([shareableImageBlob], 'janmashtami-template.png', { type: 'image/png' });
+  const file = new File([shareableImageBlob], 'janmashtami-greeting.png', { type: 'image/png' });
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    navigator.share({ files: [file], title: 'Happy Janmashtami!', text: 'Here’s my greeting!' })
+    navigator.share({ files: [file], title: 'Happy Janmashtami!', text: 'Here\'s my greeting!' })
       .catch(err => console.error('Share failed:', err));
   } else {
-    const msg = encodeURIComponent(`Happy Janmashtami!\n - ${nameInput.value}`);
+    const msg = encodeURIComponent(`Happy Janmashtami!\n - ${nameInput.value || 'Anonymous'}`);
     window.open(`https://wa.me/?text=${msg}`, '_blank');
   }
 });
 
 generalShareBtn.addEventListener('click', () => {
   if (!shareableImageBlob) {
-    alert('Generate image first!');
+    alert('Please upload an image and click Download first!');
     return;
   }
-  const file = new File([shareableImageBlob], 'janmashtami-template.png', { type: 'image/png' });
+  const file = new File([shareableImageBlob], 'janmashtami-greeting.png', { type: 'image/png' });
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
     navigator.share({ files: [file], title: 'My Janmashtami Greeting', text: 'Check this out!' })
       .catch(err => console.error('Share failed:', err));
   } else {
-    alert('Sharing not supported on this browser.');
+    // Fallback: create a download link
+    const link = document.createElement('a');
+    link.download = 'janmashtami-greeting.png';
+    link.href = URL.createObjectURL(shareableImageBlob);
+    link.click();
   }
 });
 
 function generateImage(downloadAfter = false) {
+  if (!templateImage) {
+    alert('Template image is still loading. Please wait a moment and try again.');
+    return;
+  }
+
   const canvas = document.createElement('canvas');
-  canvas.width = 400;
-  canvas.height = 600;
+  // Use template image dimensions
+  canvas.width = templateImage.naturalWidth || 800;
+  canvas.height = templateImage.naturalHeight || 1200;
+  
   const ctx = canvas.getContext('2d');
-  const bg = new Image();
-  bg.src = 'janmastmi_template.jpg';
 
-  bg.onload = () => {
-    ctx.drawImage(bg, 0, 0, 400, 600);
-    const drawFinal = () => {
-      const name = nameInput.value || '';
-      ctx.font = 'bold 18px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillStyle = '#333';
-      ctx.fillText(name, 317, 575);
+  // Draw background template
+  ctx.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
 
-      canvas.toBlob(blob => {
-        shareableImageBlob = blob;
-        if (downloadAfter) {
-          const link = document.createElement('a');
-          link.download = 'janmashtami-template.png';
-          link.href = URL.createObjectURL(blob);
-          link.click();
-        }
-      }, 'image/png');
-    };
+  // Function to draw the final image with user content
+  const drawFinal = () => {
+    const name = nameInput.value || '';
+    
+    // Draw name text
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#333';
+    ctx.fillText(name, canvas.width * 0.5, canvas.height * 0.95);
 
-    if (uploadedImg.src) {
-      const userImg = new Image();
-      userImg.onload = () => {
-       ctx.drawImage(userImg,249, 380, 135, 155);
-        drawFinal();
-      };
-      userImg.src = uploadedImg.src;
-    } else {
-      drawFinal();
-    }
+    // Convert to blob and handle download/share
+    canvas.toBlob(blob => {
+      shareableImageBlob = blob;
+      if (downloadAfter) {
+        const link = document.createElement('a');
+        link.download = 'janmashtami-greeting.png';
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        URL.revokeObjectURL(link.href); // Clean up
+      }
+    }, 'image/png', 0.9);
   };
+
+  // Handle uploaded image
+  if (uploadedImg.src && uploadedImg.src !== '') {
+    const userImg = new Image();
+    userImg.onload = () => {
+      // Calculate position and size for the uploaded image
+      // Position it in the center area of the template
+      const imgWidth = canvas.width * 0.3; // 30% of canvas width
+      const imgHeight = canvas.height * 0.25; // 25% of canvas height
+      const imgX = (canvas.width - imgWidth) * 0.5; // Center horizontally
+      const imgY = canvas.height * 0.4; // Position vertically
+      
+      ctx.drawImage(userImg, imgX, imgY, imgWidth, imgHeight);
+      drawFinal();
+    };
+    userImg.onerror = () => {
+      console.error('Failed to load uploaded image');
+      drawFinal();
+    };
+    userImg.src = uploadedImg.src;
+  } else {
+    drawFinal();
+  }
 }
